@@ -4,6 +4,7 @@ import Parser
 import Data.Char
 import Exp
 import Let
+import Opt
 import Prelude hiding ((<*>),(<$>))
 
 data If = If Exp ItemsF
@@ -30,7 +31,7 @@ pIf = f <$> token' "if" <*> symbol' '(' <*> pExp
                         <*> symbol' '{'
                         <*> pItemsIf
                         <*> symbol' '}'
-        where f _ _ a _ _ b _ = If a b
+        where f _ _ a _ _ b _ = If (optExp a) b
               g _ _ a _ _ b _ _ _ c _ = Else c                       
 
 pItemsIf =         succeed []
@@ -39,7 +40,7 @@ pItemsIf =         succeed []
 
 pItemIf =  f <$>  ident <*> symbol' '=' <*> pExp
      <|> g <$>  ident <*> symbol' '=' <*> pIf
-     where  f a _ c = DeclIf a c
+     where  f a _ c = DeclIf a (optExp c)
             g a _ c = NestedIf a c
 
 

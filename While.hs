@@ -4,6 +4,7 @@ import Parser
 import Data.Char
 import Exp
 import Let
+import Opt
 import Prelude hiding ((<*>),(<$>))
 
 data While = While Exp ItemsW
@@ -19,7 +20,7 @@ pWhile = f <$> token' "while" <*> symbol' '(' <*> pExp
                               <*> symbol' ')'
                               <*> symbol' '{' <*> pItemsW
                               <*> symbol' '}'
-       where f _ _ a _ _ g _ = While a g 
+       where f _ _ a _ _ g _ = While (optExp a) g 
 
 pItemsW =         succeed []
       <|>  f <$> pItemW <*> symbol' ';' <*> pItemsW
@@ -27,5 +28,5 @@ pItemsW =         succeed []
 
 pItemW =  f <$>  ident <*> symbol' '=' <*> pExp
      <|> g <$>  ident <*> symbol' '=' <*> pWhile
-     where  f a _ c = DeclW a c
+     where  f a _ c = DeclW a (optExp c)
             g a _ c = NestedWhile a c

@@ -21,7 +21,8 @@ Factor ->  int
         |  var
         |  '('  Exp ')'
 
-Statemets -> While Exp Statemets
+Statemets -> Let Statemets 'in' Exp
+          | While Exp Statemets
           | If Exp Statemets
           | If Exp Statemets else Statemets
           | var '=' Exp

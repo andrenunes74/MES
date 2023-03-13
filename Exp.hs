@@ -20,7 +20,9 @@ data Exp = Add Exp Exp
          deriving Show
 
 pExp :: Parser Exp
-pExp =  f  <$> pTermo <*> symbol' '+' <*> pExp
+pExp = a  <$> pTermo <*> symbol' '+' <*> symbol' '+'
+    <|> b  <$> pTermo <*> symbol' '-' <*> symbol' '-'
+    <|> f  <$> pTermo <*> symbol' '+' <*> pExp
     <|> id <$> pTermo
     <|> g  <$> pTermo <*> symbol' '-' <*> pExp
     <|> x  <$> pTermo <*> symbol' '>' <*> pExp
@@ -41,6 +43,8 @@ pExp =  f  <$> pTermo <*> symbol' '+' <*> pExp
           h a _ _ c = Not c
           l a _ _ c = GTE a c
           k a _ _ c = LTE a c
+          a x _ _ = Add x (Const 1)
+          b x _ _ = Sub x (Const 1)
     
 pTermo :: Parser Exp
 pTermo =  f  <$> pFactor <*> symbol' '*' <*> pTermo

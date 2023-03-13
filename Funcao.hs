@@ -4,6 +4,7 @@ import Parser
 import Data.Char
 import Exp
 import Let
+import Opt
 import Prelude hiding ((<*>),(<$>))
 
 data Funcao = Funcao Name Args
@@ -21,7 +22,11 @@ type Args = [Arg]
 pFuncao = f <$> token' "def" <*> pName <*> symbol' '(' 
                              <*> pArgs
                              <*> symbol' ')'
+         <|> g <$> pName <*> symbol' '(' 
+                             <*> pArgs
+                             <*> symbol' ')'
        where f _ b _ a _ = Funcao b a
+             g b _ a _ = Funcao b a
 
 pName = f <$> ident
         where f a = Name a
@@ -34,5 +39,5 @@ pArgs =         succeed []
 
 pArg =  f <$>  pExp
     <|> g <$> pFuncao
-     where  f a = Arg a
+     where  f a = Arg (optExp a)
             g a = NestedFuncao a

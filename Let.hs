@@ -5,6 +5,7 @@ module Let where
 import Parser
 import Data.Char
 import Exp
+import Opt
 import Prelude hiding ((<*>),(<$>))
 
 -- Syntax Abstracta da Ling. Let
@@ -21,7 +22,7 @@ data Item = NestedLet String Let
 pLet = f <$> token' "let" <*> symbol' '{' <*> pItems 
                           <*> symbol' '}' <*> token' "in"
                           <*> pExp
-       where f l a i f _ e = Let i e 
+       where f l a i f _ e = Let i (optExp e) 
 
 pItems =         succeed []
       <|>  f <$> pItem <*> symbol' ';' <*> pItems
@@ -29,7 +30,7 @@ pItems =         succeed []
 
 pItem =  f <$>  ident <*> symbol' '=' <*> pExp
      <|> g <$>  ident <*> symbol' '=' <*> pLet
-     where  f a b c = Decl a c
+     where  f a b c = Decl a (optExp c)
             g a b c = NestedLet a c
 
 pId =  f <$>  satisfy' (isLower)
