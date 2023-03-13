@@ -10,7 +10,7 @@ Exp    ->  Termo '+' Exp
         |  Termo '==' Exp
         |  Termo '++'
         |  Termo '--' 
-        |  '!=' Exp   // funciona como negaçao e inverso
+        |  '!' Exp   // funciona como negaçao e inverso
         |  Termo
 
 Termo  ->  Factor '*' Termo
