@@ -19,13 +19,13 @@ pWhile = f <$> token' "while" <*> symbol' '(' <*> pExp
                               <*> symbol' ')'
                               <*> symbol' '{' <*> pItemsW
                               <*> symbol' '}'
-       where f l b a c i g x = While a g 
+       where f _ _ a _ _ g _ = While a g 
 
 pItemsW =         succeed []
       <|>  f <$> pItemW <*> symbol' ';' <*> pItemsW
-    where f a b c = a:c
+    where f a _ c = a:c
 
 pItemW =  f <$>  ident <*> symbol' '=' <*> pExp
      <|> g <$>  ident <*> symbol' '=' <*> pWhile
-     where  f a b c = DeclW a c
-            g a b c = NestedWhile a c
+     where  f a _ c = DeclW a c
+            g a _ c = NestedWhile a c

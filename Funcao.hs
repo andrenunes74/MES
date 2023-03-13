@@ -29,7 +29,7 @@ pName = f <$> ident
 pArgs =         succeed []
       <|>  f <$> pArg <*> symbol' ',' <*> pArgs
       <|>  g <$> pArg
-    where f a b c = a:c
+    where f a _ c = a:c
           g a = [a]
 
 pArg =  f <$>  pExp

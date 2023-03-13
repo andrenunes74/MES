@@ -35,12 +35,12 @@ pIf = f <$> token' "if" <*> symbol' '(' <*> pExp
 
 pItemsIf =         succeed []
       <|>  f <$> pItemIf <*> symbol' ';' <*> pItemsIf
-      where f a b c = a:c
+      where f a _ c = a:c
 
 pItemIf =  f <$>  ident <*> symbol' '=' <*> pExp
      <|> g <$>  ident <*> symbol' '=' <*> pIf
-     where  f a b c = DeclIf a c
-            g a b c = NestedIf a c
+     where  f a _ c = DeclIf a c
+            g a _ c = NestedIf a c
 
 
 
