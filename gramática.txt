@@ -8,8 +8,8 @@ Exp    ->  Termo '+' Exp
         |  Termo '&&' Exp
         |  Termo '||' Exp
         |  Termo '==' Exp
-        |  Termo '++' // ainda n está
-        |  Termo '--' // ainda n está
+        |  Termo '++'
+        |  Termo '--' 
         |  '!=' Exp   // funciona como negaçao e inverso
         |  Termo
 
