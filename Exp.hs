@@ -30,7 +30,7 @@ pExp = a  <$> pTermo <*> symbol' '+' <*> symbol' '+'
     <|> z  <$> pTermo <*> symbol' '=' <*> symbol' '=' <*> pExp
     <|> t  <$> pTermo <*> symbol' '&' <*> symbol' '&' <*> pExp
     <|> v  <$> pTermo <*> symbol' '|' <*> symbol' '|' <*> pExp
-    <|> h  <$> pTermo <*> symbol' '!' <*> symbol' '=' <*> pExp
+    <|> h  <$> symbol' '!' <*> pExp
     <|> l  <$> pTermo <*> symbol' '>' <*> symbol' '=' <*> pExp
     <|> k  <$> pTermo <*> symbol' '<' <*> symbol' '=' <*> pExp
     where f a _ c = Add a c
@@ -40,7 +40,7 @@ pExp = a  <$> pTermo <*> symbol' '+' <*> symbol' '+'
           z a _ _ c = Equals a c
           t a _ _ c = And a c
           v a _ _ c = Or a c
-          h a _ _ c = Not c
+          h _ c = Not c
           l a _ _ c = GTE a c
           k a _ _ c = LTE a c
           a x _ _ = Add x (Const 1)
