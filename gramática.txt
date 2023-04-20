@@ -10,7 +10,7 @@ Exp    ->  Termo '+' Exp
         |  Termo '==' Exp
         |  Termo '++'
         |  Termo '--' 
-        |  '!' Exp   // funciona como negaçao e inverso
+        |  '!' Exp
         |  Termo
 
 Termo  ->  Factor '*' Termo
@@ -21,15 +21,21 @@ Factor ->  int
         |  var
         |  '('  Exp ')'
 
-Statemets -> Let Statemets 'in' Exp
-          | While Exp Statemets
-          | If Exp Statemets
-          | If Exp Statemets else Statemets
+Item -> Factor '=' Exp
+      | Exp
+      | If
+      | While
+      | Let 
+      | Funcao
+
+Statemets -> Let '{' Item+ '}' 'in' Exp
+          | While '(' Exp ')' '{' Item+ '}'
+          | If '(' Exp ')' '{' Item+ '}'
+          | If '(' Exp ')' '{' Item+ '}' else '{' Item+ '}'
           | var '=' Exp
 
-Funcao -> String '(' var ')'
-        | String '(' int ')'
-        | String '(' Funcao ')'
-        | String '()'
-
+Funcao -> 'func' String '(' Factor ')'
+        | 'func' String '()'
+        | 'def' String '(' Factor ')' '{' Statemets '}'
+        | 'def' String '()' '{' Statemets '}'
 ===============================================================
