@@ -19,7 +19,7 @@ Termo  ->  Factor '*' Termo
 
 Factor ->  int
         |  var
-        |  '('  Exp ')'
+        |  '(' Exp ')'
 
 Item -> Factor '=' Exp
       | Exp

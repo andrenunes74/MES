@@ -23,6 +23,9 @@ pExp = a  <$> pTermo <*> symbol' '+' <*> symbol' '+'
     <|> h  <$> symbol' '!' <*> pExp
     <|> l  <$> pTermo <*> symbol' '>' <*> symbol' '=' <*> pExp
     <|> k  <$> pTermo <*> symbol' '<' <*> symbol' '=' <*> pExp
+    <|> r  <$> token' "return" <*> pExp
+    <|> tr  <$> token' "True" 
+    <|> fl  <$> token' "False" 
     where f a _ c = Add a c
           g a _ c = Sub a c
           x a _ c = Greater a c
@@ -35,6 +38,9 @@ pExp = a  <$> pTermo <*> symbol' '+' <*> symbol' '+'
           k a _ _ c = LTE a c
           a x _ _ = Inc x
           b x _ _ = Dec x
+          r _ a   = Return a
+          tr a = Bool True
+          fl a = Bool False
     
 pTermo :: Parser Exp
 pTermo =  f  <$> pFactor <*> symbol' '*' <*> pTermo
@@ -103,7 +109,7 @@ pIf = f <$> token' "if" <*> symbol' '(' <*> pExp
                         <*> pItems
                         <*> symbol' '}'
         where f _ _ a _ _ b _ = If (optExp a) b
-              g _ _ a _ _ b _ _ _ c _ = Else c      
+              g _ _ a _ _ b _ _ _ c _ = Else a b c      
 
 {-------------------------------------------------------------
 ************************ Functions ***************************
@@ -134,6 +140,9 @@ pArg =  f <$>  pExp
      where  f a = Arg (optExp a)
             g a = NestedFuncao a
 
+pReturn = f <$> token' "return" <*> pExp
+        where f _ a = Return a
+
 {-------------------------------------------------------------
 ************************ Items *******************************
 --------------------------------------------------------------}
@@ -146,22 +155,24 @@ pItems =         succeed []
 pItem =    f   <$> ident <*> symbol' '=' <*> pExp
      <|>   h <$> pExp <*> symbol' '+' <*> symbol' '+'
      <|>   k <$> pExp <*> symbol' '-' <*> symbol' '-'
-     <|>   x <$> ident <*> symbol' '=' <*> pLet
+     <|>   x <$> pLet
      <|>   g <$> pWhile
      <|>   j <$> pIf
      <|>   p <$> pFuncao
+     <|>   r <$> pReturn
      where  f a _ c = Decl a (optExp c)
             h a _ _ = Increment a 
             k a _ _ = Decrement a
             g c     = NestedWhile c
             j c     = NestedIf c
-            x a b c = NestedLet a c
+            x a     = NestedLet a
             p a     = NestedFuncao a
+            r a     = NestedReturn a
 
 {------------------------------------------------------------------------------------------------
 ********************************************* Main **********************************************
 - Example of how to run: 
-pParse "def main(args){a=100;x=0;while(a>b){x++;if(!a>b){a--;}};x=let{a=a+b;}in c;func coco();}"
+pParse "def main(args){a=100;x=0;while(a>b){x++;if(!a>b){a--;}};let{a=a+b;}in c;func coco();}"
 *************************************************************************************************
 -------------------------------------------------------------------------------------------------}
 pParse =   f <$> pIf

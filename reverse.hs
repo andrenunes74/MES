@@ -25,6 +25,8 @@ rExp (Mul a b) = (rExp a) ++ "*" ++ (rExp b)
 rExp (Div a b) = (rExp a) ++ "/" ++ (rExp b)
 rExp (Sub a b) = (rExp a) ++ "-" ++ (rExp b)
 rExp (Add a b) = (rExp a) ++ "+" ++ (rExp b)
+rExp (Return a) = "return " ++ (rExp a)
+rExp (Bool a) = (show a)
 
 {-------------------------------------------------------------
 ************************ Items *******************************
@@ -38,10 +40,11 @@ rItem (NestedIf a) = (rIf a)
 rItem (OpenIf a) = (rIf a)
 rItem (NestedWhile a) = (rWhile a)
 rItem (OpenWhile a) = (rWhile a)
-rItem (NestedLet a b) = a++"="++(rLet b)
+rItem (NestedLet b) =(rLet b)
 rItem (OpenLet a) = (rLet a)
 rItem (NestedFuncao a) = (rFuncao a)
 rItem (OpenFuncao a) = (rFuncao a)
+rItem (NestedReturn a) = (rExp a)
 
 rItems :: Items -> String
 rItems [] = ""
@@ -53,7 +56,7 @@ rItems (h:t) = (rItem h) ++";"++ (rItems t)
 --------------------------------------------------------------}
 rIf :: If -> String
 rIf (If a b) = "if"++"("++(rExp a)++")"++"{"++(rItems b)++"}"
-rIf (Else a) = "else"++ "{"++(rItems a)++"}"
+rIf (Else a b c) = "if"++"("++(rExp a)++")"++"{"++(rItems b)++"}"++"else"++ "{"++(rItems c)++"}"
 
 {-------------------------------------------------------------
 ************************ While *******************************
@@ -76,7 +79,7 @@ rName (Name a) = a
 rArgs :: Args -> String
 rArgs [] = ""
 rArgs [h] = (rItem h)
-rArgs (h:t) = (rItem h)++(rArgs t)
+rArgs (h:t) = (rItem h)++","++(rArgs t)
 
 rFuncao :: Funcao -> String
 rFuncao (Funcao a b) = "func "++(rName a)++"("++(rArgs b)++")"

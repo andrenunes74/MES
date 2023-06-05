@@ -1,5 +1,7 @@
+{-# LANGUAGE DeriveDataTypeable #-}
 {-Module that contains the datatypes of the parser-}
 module Core where
+import Data.Data
 {--------------------------------
 ********** Expressions **********
 ---------------------------------}
@@ -19,8 +21,9 @@ data Exp = Add Exp Exp
          | Var String
          | Inc Exp
          | Dec Exp
-         | Bug String
-         deriving Show
+         | Return Exp
+         | Bool Bool
+         deriving (Show,Eq,Data)
 
 {--------------------------------
 ************* Item **************
@@ -33,29 +36,30 @@ data Item = Decl String Exp
           | OpenIf If
           | NestedWhile While
           | OpenWhile While
-          | NestedLet String Let
+          | NestedLet Let
           | OpenLet Let
           | NestedFuncao Funcao
           | OpenFuncao Funcao
-          deriving Show
+          | NestedReturn Exp
+          deriving (Show,Eq,Data)
 
-type Items = [Item]
+type Items = [Item] 
 
 {--------------------------------
 ************* Let ***************
 ---------------------------------}
 data Let = Let Items Exp
-        deriving Show
+        deriving (Show,Eq,Data)
 
 {--------------------------------
 ********** Functions ************
 ---------------------------------}
 data Funcao = Funcao Name Args
             | DefFuncao Name Args Items
-            deriving Show
+            deriving (Show,Eq,Data)
 
 data Name = Name String 
-          deriving Show
+          deriving (Show,Eq,Data)
 
 type Args = [Item] 
 
@@ -63,11 +67,11 @@ type Args = [Item]
 ************** If ***************
 ---------------------------------}
 data If = If Exp Items
-        | Else Items
-        deriving Show
+        | Else Exp Items Items
+        deriving (Show,Eq,Data)
         
 {--------------------------------
 ************ While **************
 ---------------------------------}
 data While = While Exp Items
-        deriving Show
+        deriving (Show,Eq,Data)
