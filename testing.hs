@@ -32,3 +32,7 @@ prop_4 x = pParse(reverseP x) == optWithZippersBU(pParse(reverseP x))
 prop_5 :: [(Item,String)] -> Bool
 prop_5 x = pParse(reverseP x) == optWithZippersTD(pParse(reverseP x))
 
+--testar se a eliminação de smells e a optimização de expressõees aritméticas é comutativo (passed).
+prop_6 :: [(Item,String)] -> Bool
+prop_6 x = pParse(reverseP(optWithZippersTD x)) == optWithZippersTD(pParse(reverseP x))
+
